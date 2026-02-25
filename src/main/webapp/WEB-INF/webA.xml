@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" version="6.0">
+    <!-- Secure Filter removed: class not on classpath. To restore, add the provider JAR or dependency. -->
+    <!-- Keep MainServlet for initialization ONLY -->
+	<!-- Secure Filter removed: class not on classpath. To restore, add the provider JAR or dependency. -->
+	<!-- Keep MainServlet for initialization ONLY -->
+	<servlet>
+		<servlet-name>MainServlet</servlet-name>
+		<servlet-class>com.liferay.portal.servlet.MainServlet</servlet-class>
+		<init-param>
+			<param-name>ctx_path</param-name>
+			<param-value>/</param-value>
+		</init-param>
+
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+    <servlet>
+        <servlet-name>jspSupportServlet</servlet-name>
+        <servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+
+    <listener>
+        <listener-class>com.liferay.portal.servlet.SessionListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.apache.struts2.tiles.StrutsTilesListener</listener-class>
+    </listener>
+	<!-- NEW: Extract service() logic to filter -->
+	<filter>
+		<filter-name>LiferayPreprocessingFilter</filter-name>
+		<filter-class>com.liferay.portal.servlet.LiferayPreprocessingFilter</filter-class>
+		<init-param>
+			<param-name>ctx_path</param-name>
+			<param-value>/</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>StrutsPrepareAndExecuteFilter</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+
+
+	<!-- Filter order matters! -->
+	<filter-mapping>
+		<filter-name>LiferayPreprocessingFilter</filter-name>
+		<url-pattern>/c/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>StrutsPrepareAndExecuteFilter</filter-name>
+		<url-pattern>/c/*</url-pattern>
+	</filter-mapping>
+
+
+
+	<context-param>
+		<param-name>company_id</param-name>
+		<param-value>liferay.com</param-value>
+	</context-param>
+	<context-param>
+		<param-name>ctx_path</param-name>
+		<param-value>/</param-value>
+	</context-param>
+	<!-- Compression handled by JBoss EAP 8.1 Undertow built-in GZIP -->
+	<!-- Security handled by web.xml security-constraint declarations -->
+	<context-param>
+		<param-name>org.apache.tiles.definition.DefinitionsFactory</param-name>
+		<param-value>org.apache.tiles.factory.BasicTilesContainerFactory</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.tiles.impl.BasicTilesContainer.DEFINITIONS_CONFIG</param-name>
+		<param-value>/WEB-INF/classes/tiles-defs.xml,/WEB-INF/classes/tiles-defs-ext.xml</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>InitServlet</servlet-name>
+		<display-name>InitServlet</display-name>
+		<servlet-class>com.liferay.portal.servlet.InitServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+
+	<!-- NO servlet-mapping! We only want init() to run -->
+	<servlet>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<display-name>CaptchaServlet</display-name>
+		<servlet-class>com.liferay.portal.servlet.CaptchaServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>ImageServlet</servlet-name>
+		<display-name>ImageServlet</display-name>
+		<servlet-class>com.liferay.portal.servlet.ImageServlet</servlet-class>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>LuceneServlet</servlet-name>
+		<display-name>LuceneServlet</display-name>
+		<servlet-class>com.liferay.portal.servlet.LuceneServlet</servlet-class>
+		<load-on-startup>5</load-on-startup>
+	</servlet>
+	<!-- <servlet>
+		<servlet-name>BlogsServlet</servlet-name>
+		<display-name>BlogsServlet</display-name>
+		<servlet-class>com.liferay.portlet.blogs.servlet.BlogsServlet</servlet-class>
+		<init-param>
+			<param-name>ctx_path</param-name>
+			<param-value>/</param-value>
+		</init-param>
+		<load-on-startup>6</load-on-startup>
+	</servlet> -->
+	<!-- <servlet>
+		<servlet-name>ChatServlet</servlet-name>
+		<display-name>ChatServlet</display-name>
+		<servlet-class>com.liferay.portlet.chat.servlet.ChatServlet</servlet-class>
+		<init-param>
+			<param-name>chatServerClass</param-name>
+			<param-value>com.liferay.portlet.chat.util.ChatServer</param-value>
+		</init-param>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>nfc/nfc.conf</param-value>
+		</init-param>
+		<load-on-startup>7</load-on-startup>
+	</servlet> -->
+	<!-- <servlet>
+		<servlet-name>HttpService</servlet-name>
+		<servlet-class>com.liferay.portlet.httpbridge.servlet.HttpService</servlet-class>
+		<load-on-startup>8</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>UserService</servlet-name>
+		<servlet-class>com.liferay.portlet.httpbridge.servlet.UserService</servlet-class>
+		<load-on-startup>9</load-on-startup>
+	</servlet> -->
+	<!-- <servlet>
+		<servlet-name>JCVSServlet</servlet-name>
+		<display-name>JCVSServlet</display-name>
+		<servlet-class>com.liferay.portlet.jcvs.servlet.JCVSServlet</servlet-class>
+		<init-param>
+			<param-name>JCVSletConfigDirectory</param-name>
+			<param-value>WEB-INF/jcvs/conf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>JCVSletTempDirectory</param-name>
+			<param-value>WEB-INF/jcvs/temp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>JCVSletWorkDirectory</param-name>
+			<param-value>WEB-INF/jcvs/work</param-value>
+		</init-param>
+		<load-on-startup>10</load-on-startup>
+	</servlet> -->
+
+	<!-- NO servlet-mapping for MainServlet - /c/* handled by filters -->
+	<servlet-mapping>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<url-pattern>/captcha/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ImageServlet</servlet-name>
+		<url-pattern>/image/*</url-pattern>
+	</servlet-mapping>
+	<!-- <servlet-mapping>
+		<servlet-name>BlogsServlet</servlet-name>
+		<url-pattern>/blogs/*</url-pattern>
+	</servlet-mapping> -->
+	<!-- <servlet-mapping>
+		<servlet-name>ChatServlet</servlet-name>
+		<url-pattern>/chat/*</url-pattern>
+	</servlet-mapping> -->
+	<!-- <servlet-mapping>
+		<servlet-name>HttpService</servlet-name>
+		<url-pattern>/httpbridge/http</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JCVSServlet</servlet-name>
+		<url-pattern>/jcvs/*</url-pattern>
+	</servlet-mapping> -->
+	<session-config>
+		<session-timeout>90</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+
+	<!-- Taglib mappings removed: TLD files relocated/managed by JARs or removed from WAR -->
+	<resource-ref>
+		<res-ref-name>jdbc/LiferayPool</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+	<resource-ref>
+		<res-ref-name>mail/MailSession</res-ref-name>
+		<res-type>jakarta.mail.Session</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>/c/portal/*</web-resource-name>
+			<url-pattern>/c/portal/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/portal_public/protected</web-resource-name>
+			<url-pattern>/c/portal_public/protected</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/address_book/export</web-resource-name>
+			<url-pattern>/c/address_book/export</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/bookmarks/open_entry</web-resource-name>
+			<url-pattern>/c/bookmarks/open_entry</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/calendar/iframe_events</web-resource-name>
+			<url-pattern>/c/calendar/iframe_events</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/document_library/get_file</web-resource-name>
+			<url-pattern>/c/document_library/get_file</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/document_library/get_file_version</web-resource-name>
+			<url-pattern>/c/document_library/get_file_version</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/image_gallery/view_slide_show</web-resource-name>
+			<url-pattern>/c/image_gallery/view_slide_show</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/jcvs/download</web-resource-name>
+			<url-pattern>/c/jcvs/download</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/journal/view_article_content</web-resource-name>
+			<url-pattern>/c/journal/view_article_content</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/mail/save_part</web-resource-name>
+			<url-pattern>/c/mail/save_part</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/message_boards/get_message_attachment</web-resource-name>
+			<url-pattern>/c/message_boards/get_message_attachment</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/polls/view_chart</web-resource-name>
+			<url-pattern>/c/polls/view_chart</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/c/recent_documents/*</web-resource-name>
+			<url-pattern>/c/recent_documents/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>/jcvs/*</web-resource-name>
+			<url-pattern>/jcvs/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>users</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>PortalRealm</realm-name>
+		<form-login-config>
+			<form-login-page>/c/portal_public/j_login</form-login-page>
+			<form-error-page>/c/portal_public/j_login_error</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-role>
+		<role-name>users</role-name>
+	</security-role>
+
+	<jsp-config>
+		<taglib>
+			<taglib-uri>http://liferay.com/tld/liferay-util</taglib-uri>
+			<taglib-location>/WEB-INF/tld/liferay-util.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://liferay.com/tld/liferay-portlet</taglib-uri>
+			<taglib-location>/WEB-INF/tld/liferay-portlet.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+</web-app>
